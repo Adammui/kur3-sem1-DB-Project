@@ -2,6 +2,9 @@ package ast.fit.bstu.oop3;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,42 +22,33 @@ import java.util.Date;
 
 public class Talon extends AppCompatActivity {
 
+    private SQLiteDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_talon);
-        TextView t= findViewById(R.id.texto);
-        String tickets = super.getFilesDir()+ "lab4-tickets.json";
-        Bundle arg=getIntent().getExtras();
+        TextView t = findViewById(R.id.texto);
+        String tickets = super.getFilesDir() + "lab4-tickets.json";
+        Bundle arg = getIntent().getExtras();
         int id = (int) arg.get("linenumber");
-
-        File file = new File(tickets);
-        try {
-            FileReader fr = new FileReader(file);
-            BufferedReader reader = new BufferedReader(fr);
-            String line = reader.readLine();
+            db = new DbHelper(getApplicationContext()).getReadableDatabase();
+            Cursor cursor = DbTalon.getAll(db);
             int i = 0;
-            String[] temps = new String[0];
-            while (line != null) {
-                if (i == id) {
-                    temps = line.split("\\s*([-]|[-]|[-]|[-]|[-]|[-]|[;])\\s*");
+            while (cursor.moveToNext()) {
+                i++;
+                if (id == cursor.getInt(cursor.getColumnIndexOrThrow("idtalon"))) {
+
+                    String name = cursor.getString(cursor.getColumnIndexOrThrow("prof_name"));
+                    String doc = cursor.getString(cursor.getColumnIndexOrThrow("doctor_name"));
+                    String spec = cursor.getString(cursor.getColumnIndexOrThrow("spec"));
+                    String time = cursor.getString(cursor.getColumnIndexOrThrow("time"));
+                    String town = cursor.getString(cursor.getColumnIndexOrThrow("town"));
+                    String an = cursor.getString(cursor.getColumnIndexOrThrow("analysis"));
+                    t.setText(name + " Записан(а) в больницу г. " + town +
+                            " к врачу-" + spec + "у " + doc + ". Запись назначена на " +
+                            time +" "+ new SimpleDateFormat("MM/dd/yyyy").format(Calendar.getInstance().getTime()) + " " + an);
                 }
-                line = reader.readLine();
-                i += 1;
             }
-            String an=null;
-        if(temps[6]=="1") {
-            an=" Анализы требуются";
-        } else {
-            an=" Анализы не требуются";
-        }
-            t.setText(temps[0]+" "+temps[1]+" Записан(а) в больницу г. "+temps[2]+
-                    " к врачу-"+temps[3]+"у "+temps[4]+". Запись назначена на "+
-                    temps[5]+".00 "+ new SimpleDateFormat("MM/dd/yyyy").format(Calendar.getInstance().getTime())+" "+ an);
-        }
-        catch (IOException e)
-        {
-                e.printStackTrace();
-        }
     }
 }

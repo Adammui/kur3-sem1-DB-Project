@@ -28,6 +28,17 @@
             android:text="Профиль"
             android:textStyle="bold"/>
 
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Иван" />
+
+        <EditText
+            android:id="@+id/usersurname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Иванов" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,12 +60,19 @@
                 android:layout_marginRight="10dp">
 
                 <Button
+                    android:id="@+id/button"
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_weight="1"
+                    android:text="Загрузить фото" />
+                <Button
                     android:id="@+id/sendemail"
                     android:layout_width="match_parent"
                     android:layout_height="5dp"
                     android:layout_weight="1"
                     android:onClick="post"
-                    android:text="Написать нам" />
+                    android:text="Нужна помощь?"
+                    android:outlineSpotShadowColor="@color/lightGray"/>
                 <Button
                     android:id="@+id/call"
                     android:layout_width="match_parent"
@@ -62,21 +80,8 @@
                     android:layout_weight="1"
                     android:textSize="13dp"
                     android:onClick="call"
-                    android:text="Позвонить" />
+                    android:text="Позвонить в справку" />
 
-                <Button
-                    android:id="@+id/vk"
-                    android:layout_width="match_parent"
-                    android:layout_height="5dp"
-                    android:layout_weight="1"
-                    android:onClick="vk"
-                    android:text="VK" />
-                <Button
-                    android:id="@+id/button"
-                    android:layout_width="match_parent"
-                    android:layout_height="5dp"
-                    android:layout_weight="1"
-                    android:text="Загрузить фото" />
             </LinearLayout>
 
 

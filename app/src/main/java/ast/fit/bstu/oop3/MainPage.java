@@ -7,18 +7,24 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,18 +32,20 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
 
 
-public class MainPage extends AppCompatActivity {
+public class MainPage extends AppCompatActivity implements TextWatcher {
 
     private ImageView imageView;
     private final int Pick_image = 1;
-    private String tickets= null;
+    private String name= null;
     private String profile = null;
-
+    private SQLiteDatabase db;
+    EditText n,s;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,48 +58,62 @@ public class MainPage extends AppCompatActivity {
         }
         else {
             profile= super.getFilesDir()+"lab4-main.json";
-            tickets = super.getFilesDir()+ "lab4-tickets.json";
+            name= super.getFilesDir()+"lab4-main1.json";
             imageView = (ImageView) findViewById(R.id.imageView);
             Button but = (Button) findViewById(R.id.button1);
+            n= findViewById(R.id.username);s= findViewById(R.id.usersurname);
+            n.addTextChangedListener(this);s.addTextChangedListener( this);
             try {
                 String img = new String(Files.readAllBytes(Paths.get(profile)));
                 Uri imageUri = Uri.parse(img);
                 InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                 imageView.setImageBitmap(selectedImage);
+                String nameands = new String(Files.readAllBytes(Paths.get(name)));
+                //todo
+                String[] temps = nameands.split("\\s*([-]|[;])\\s*");
+                n.setText(temps[0]); s.setText(temps[1]);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            try {
-                LinearLayout layout = findViewById(R.id.box);
-                LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
-                File file = new File(tickets);
-                FileReader fr = null;
-                fr = new FileReader(file);
-                BufferedReader reader = new BufferedReader(fr);
-                String line = reader.readLine();
-                int i=0;
-                while (line != null) {
-                    String[] temps = line.split("\\s*([-]|[-]|[-]|[-]|[-]|[-]|[;])\\s*");
-                    Button btnNew = new Button(MainPage.this);
-                    btnNew.setText("Талон к " +temps[3]+"у на "+temps[5]+".00");
-                    btnNew.setLayoutParams(param);
-                    btnNew.setId(i);
-                    layout.addView(btnNew, param);
-                    btnNew.setOnClickListener(getTalonClick(btnNew));
-                    i+=1;
-                    line = reader.readLine();
+            LinearLayout layout = findViewById(R.id.box);
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
+            //File file = new File(tickets);
+            //FileReader fr = null;
+            //fr = new FileReader(file);
+            //BufferedReader reader = new BufferedReader(fr);
+            //String line = reader.readLine();
+            //int i=0;
+            db = new DbHelper(getApplicationContext()).getReadableDatabase();
+            Cursor cursor = DbTalon.getAll(db);
+            int i=0; String specialist = "";
+            while (cursor.moveToNext()) {
+                i++;
+                String spec,time;
+                spec= cursor.getString(cursor.getColumnIndexOrThrow("iddoc"));
+                Cursor cursor1= db.rawQuery("select speciality from " + DbHelper.DOCTOR_TABLE +
+                        " Where iddoc = ?" , new String[]{spec});
+                if (cursor1.moveToFirst()) {
+                    specialist = cursor1.getString(0);
                 }
-            }
-            catch (IOException e) {
-                    e.printStackTrace();
+                time= cursor.getString(cursor.getColumnIndexOrThrow("time"));
+                Button btnNew = new Button(MainPage.this);
+                btnNew.setText("Талон к " + specialist +"у на "+time+".00");
+                btnNew.setLayoutParams(param);
+                btnNew.setId(i);
+                layout.addView(btnNew, param);
+                btnNew.setOnClickListener(getTalonClick(btnNew));
             }
             but.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(MainPage.this, MainActivity.class);
+                    EditText n= findViewById(R.id.username);
+                    EditText s= findViewById(R.id.usersurname);
+                    intent.putExtra("surname",s.getText().toString());
+                    intent.putExtra("name", n.getText().toString());
                     startActivity(intent);
                 }
             });
@@ -117,7 +139,7 @@ public class MainPage extends AppCompatActivity {
             }
         };
     }
-
+/*
     public char[] read( String path) throws IOException {
 
         try {
@@ -134,7 +156,7 @@ public class MainPage extends AppCompatActivity {
         }
         return new char[0];
     }
-
+*/
     public void viewimage(View view) throws IOException {
         Intent intentquick = new Intent(Intent.ACTION_VIEW);
         String img = new String(Files.readAllBytes(Paths.get(profile)));
@@ -156,6 +178,7 @@ public class MainPage extends AppCompatActivity {
             Log.d("",""+ex.getMessage());
         }
     }
+
     private Object getImageUri(Context applicationContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -207,5 +230,48 @@ public class MainPage extends AppCompatActivity {
         Uri number = Uri.parse("tel:+375336349330");
         Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
         startActivity(callIntent);
+    }
+    public void cSave(String str,String path) {
+        try {
+            PrintWriter prWr = new PrintWriter(new BufferedWriter(new FileWriter( path, true)));
+            prWr.println(str);
+            prWr.close();
+        }
+        catch(IOException ex)
+        {
+            Log.d("",""+ex.getMessage());
+        }
+    }
+    @Override
+    public void afterTextChanged(Editable r) {
+        File json = new File(name);
+        json.delete();
+        try {
+            json.createNewFile();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+
+        cSave(String.format( n.getText()+"-"+ s.getText()+";" ),name);
+
+    }
+
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count,
+                                  int after) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence sp, int start, int before, int count) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
     }
 }
