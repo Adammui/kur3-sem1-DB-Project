@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">oop3</string>
+    <string-array name="doctors">
+        <item>Окулист</item>
+        <item>Хирург</item>
+        <item>ЛОР</item>
+    </string-array>
+
+    <string-array name="eye">
+        <item>Козлова Анастасия Станиславовна</item>
+        <item>Тереньтьев Анатолий Иванович</item>
+        <item>Станько Мирослав Прокофьевич</item>
+    </string-array>
+    <string-array name="h">
+        <item>Кравченко Василий Инокентьевич</item>
+    </string-array>
+    <string-array name="lor">
+        <item>Светлая Мария Алексеевна</item>
+        <item>Хоружий Владимир Владимирович</item>
+    </string-array>
+</resources>
