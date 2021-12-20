@@ -1,7 +1,6 @@
 package ast.fit.bstu.oop3;
 
 import android.content.Context;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 

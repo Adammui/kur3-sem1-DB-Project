@@ -6,13 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainPage"
-    android:background="@color/white">
+    android:background="#9BB8B5">
+
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="1dp">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -115,6 +117,7 @@
 
             </LinearLayout>
         </LinearLayout>
+
     </LinearLayout>
 
     </ScrollView>

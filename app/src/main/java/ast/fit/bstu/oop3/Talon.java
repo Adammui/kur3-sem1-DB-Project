@@ -4,21 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
-import java.util.Date;
 
 public class Talon extends AppCompatActivity {
 
@@ -38,15 +28,20 @@ public class Talon extends AppCompatActivity {
             while (cursor.moveToNext()) {
                 i++;
                 if (id == cursor.getInt(cursor.getColumnIndexOrThrow("idtalon"))) {
-
+                    String speciality = null, docname= "";
                     String name = cursor.getString(cursor.getColumnIndexOrThrow("prof_name"));
-                    String doc = cursor.getString(cursor.getColumnIndexOrThrow("doctor_name"));
-                    String spec = cursor.getString(cursor.getColumnIndexOrThrow("spec"));
+                    String doc = cursor.getString(cursor.getColumnIndexOrThrow("iddoc"));
+                    Cursor cursor1= db.rawQuery("select speciality, doctor_name from " + DbHelper.DOCTOR_TABLE +
+                            " Where iddoc = ?" , new String[]{doc});
+                    if (cursor1.moveToFirst()) {
+                        speciality = cursor1.getString(0);
+                        docname = cursor1.getString(1);
+                    }
                     String time = cursor.getString(cursor.getColumnIndexOrThrow("time"));
                     String town = cursor.getString(cursor.getColumnIndexOrThrow("town"));
                     String an = cursor.getString(cursor.getColumnIndexOrThrow("analysis"));
                     t.setText(name + " Записан(а) в больницу г. " + town +
-                            " к врачу-" + spec + "у " + doc + ". Запись назначена на " +
+                            " к врачу-" + speciality + "у " + docname + ". Запись назначена на " +
                             time +" "+ new SimpleDateFormat("MM/dd/yyyy").format(Calendar.getInstance().getTime()) + " " + an);
                 }
             }

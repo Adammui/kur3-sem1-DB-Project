@@ -1,5 +1,6 @@
 package ast.fit.bstu.oop3;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,8 +12,16 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+
 
     private String town;
     private EditText sur,name;
@@ -20,10 +29,15 @@ public class MainActivity extends AppCompatActivity {
     private RadioButton M,B,G;
     private Bundle arg;
     private int time, analysis, doc, docname;
+    GoogleMap mMap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_map);
+        mapFragment.getMapAsync(this);
         try{
             sur=findViewById(R.id.surname);
             name=findViewById(R.id.name);
@@ -56,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         if(gr.getCheckedRadioButtonId()!=-1 && !sur.getText().toString().isEmpty() && !name.getText().toString().isEmpty()) {
             RadioButton r = findViewById(gr.getCheckedRadioButtonId());
             town = r.getText().toString();
-            Intent intent = new Intent(this, MainActivity2.class);
+            Intent intent = new Intent(this, ast.fit.bstu.oop3.MainActivity2.class);
             intent.putExtra("town", town);
             intent.putExtra("surname", sur.getText().toString());
             intent.putExtra("name", name.getText().toString());
@@ -106,5 +120,37 @@ public class MainActivity extends AppCompatActivity {
         if(savedInstanceState1.get("town").toString().equals("Брест")) B.toggle();
         if(savedInstanceState1.get("town").toString().equals("Гродно")) G.toggle();
         Log.d("","restore");
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap Map) {
+        mMap=Map;
+    }
+    public void minsk(View view)
+    {
+        mMap.clear();
+        LatLng sydney = new LatLng(53.870214, 27.632376);
+        MarkerOptions marko= new MarkerOptions();
+        marko.position(sydney);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 17));
+        mMap.addMarker(marko);
+    }
+    public void brest(View view)
+    {
+        mMap.clear();
+        LatLng sydney = new LatLng(52.128,23.6766);
+        MarkerOptions marko= new MarkerOptions();
+        marko.position(sydney);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 17));
+        mMap.addMarker(marko);
+    }
+    public void grodno(View view)
+    {
+        mMap.clear();
+        LatLng sydney = new LatLng(53.66935 , 23.81313);
+        MarkerOptions marko= new MarkerOptions();
+        marko.position(sydney);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 17));
+        mMap.addMarker(marko);
     }
 }
