@@ -4,7 +4,8 @@ Android app on Java for registrating med tickets.
 local database, google api(map), various interface elements, transfering data from previous frame to current, adaptive to phone rotation frames.
 ## Screenshots
 #### main page
-![image](https://user-images.githubusercontent.com/53793144/188259873-042cc050-31ea-40b1-8ded-b722322dc20d.png)
-![image](https://user-images.githubusercontent.com/53793144/188259874-ce57a3de-c09e-4420-81f0-ea44707c2644.png)
-![image](https://user-images.githubusercontent.com/53793144/188259927-49ea1c25-0c01-4897-a273-e21e6a36b929.png)
+![image](https://user-images.githubusercontent.com/53793144/188570865-9296fe19-bd99-4764-8756-7a38b5e69ee3.png)
+#### other pages
 all the data will be saved when you press "back" button.
+![image](https://user-images.githubusercontent.com/53793144/188571113-2f876358-059f-401f-ba3b-521ddb3ce0e8.png)
+![image](https://user-images.githubusercontent.com/53793144/188571023-f4efea44-9aad-441c-895b-1bc18fd49512.png)
