@@ -9,4 +9,4 @@ local database, google api(map), various interface elements, transfering data fr
 < all the data will be saved when you press "back" button.
 
 ![image](https://user-images.githubusercontent.com/53793144/188571113-2f876358-059f-401f-ba3b-521ddb3ce0e8.png)
-![image](https://user-images.githubusercontent.com/53793144/188571023-f4efea44-9aad-441c-895b-1bc18fd49512.png)
+![image](https://user-images.githubusercontent.com/53793144/188571475-e923cbd9-da08-4506-bd3a-7d7eba80dcf3.png)
